@@ -86,7 +86,85 @@ def create_tree(
 
     return root
 
+def save_arff(
+    X,
+    filename,
+    relation_name="adversarial_kdtree",
+    y=None
+):
+    """
+    Salva uma matriz de dados no formato ARFF.
 
+    Parameters
+    ----------
+    X : np.ndarray
+        Matriz (n_amostras, n_dimensoes).
+
+    filename : str
+        Caminho do arquivo .arff.
+
+    relation_name : str
+        Nome da relação ARFF.
+
+    y : np.ndarray, optional
+        Classe binária dos exemplos.
+        Valores esperados: 0 ou 1.
+    """
+
+    X = np.asarray(X)
+
+    n_samples, n_features = X.shape
+
+    if y is None:
+        y = np.random.randint(
+            0,
+            2,
+            size=n_samples
+        )
+
+    y = np.asarray(y)
+
+    if len(y) != n_samples:
+        raise ValueError(
+            "Quantidade de classes diferente da quantidade de amostras"
+        )
+
+    if not np.all(np.isin(y, [0, 1])):
+        raise ValueError(
+            "A classe deve ser binária (0 ou 1)"
+        )
+
+
+    with open(filename, "w") as f:
+
+        # Cabeçalho
+        f.write(
+            f"@RELATION {relation_name}\n\n"
+        )
+
+        # Atributos
+        for i in range(n_features):
+            f.write(
+                f"@ATTRIBUTE x{i+1} NUMERIC\n"
+            )
+
+        f.write(
+            "@ATTRIBUTE class {0,1}\n\n"
+        )
+
+        # Dados
+        f.write("@DATA\n")
+
+        for row, label in zip(X, y):
+
+            values = ",".join(
+                f"{v:.8f}"
+                for v in row
+            )
+
+            f.write(
+                f"{values},{label}\n"
+            )
 
 def generate_points(
     node,
@@ -201,86 +279,6 @@ def generate_points(
             right_points
         ]
     )
-
-def save_arff(
-    X,
-    filename,
-    relation_name="adversarial_kdtree",
-    y=None
-):
-    """
-    Salva uma matriz de dados no formato ARFF.
-
-    Parameters
-    ----------
-    X : np.ndarray
-        Matriz (n_amostras, n_dimensoes).
-
-    filename : str
-        Caminho do arquivo .arff.
-
-    relation_name : str
-        Nome da relação ARFF.
-
-    y : np.ndarray, optional
-        Classe binária dos exemplos.
-        Valores esperados: 0 ou 1.
-    """
-
-    X = np.asarray(X)
-
-    n_samples, n_features = X.shape
-
-    if y is None:
-        y = np.random.randint(
-            0,
-            2,
-            size=n_samples
-        )
-
-    y = np.asarray(y)
-
-    if len(y) != n_samples:
-        raise ValueError(
-            "Quantidade de classes diferente da quantidade de amostras"
-        )
-
-    if not np.all(np.isin(y, [0, 1])):
-        raise ValueError(
-            "A classe deve ser binária (0 ou 1)"
-        )
-
-
-    with open(filename, "w") as f:
-
-        # Cabeçalho
-        f.write(
-            f"@RELATION {relation_name}\n\n"
-        )
-
-        # Atributos
-        for i in range(n_features):
-            f.write(
-                f"@ATTRIBUTE x{i+1} NUMERIC\n"
-            )
-
-        f.write(
-            "@ATTRIBUTE class {0,1}\n\n"
-        )
-
-        # Dados
-        f.write("@DATA\n")
-
-        for row, label in zip(X, y):
-
-            values = ",".join(
-                f"{v:.8f}"
-                for v in row
-            )
-
-            f.write(
-                f"{values},{label}\n"
-            )
 
 ### Criação da estrutura de teste
 n_points = 100000
