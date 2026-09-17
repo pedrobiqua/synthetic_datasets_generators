@@ -98,9 +98,9 @@ def generate_data(n_points: int, n_dimensions: int) -> List[List]:
 
 n_points = 100000
 dimensions = [5, 10, 15, 20]
-random.seed(1)
 
-for d in dimensions:
-    X = generate_data(n_points, d)
-    y=np.zeros(len(X), dtype=int)
-    save_arff(X, f"kdtree-{d}.arff", "kdtree_worst_case", y=y)
+for x in range(1, 6):
+    for d in dimensions:
+        X = generate_data(n_points, d)
+        y=np.zeros(len(X), dtype=int)
+        save_arff(X, f"kdtree-{d}_v{x}.arff", "kdtree", y=y)
