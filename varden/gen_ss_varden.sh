@@ -6,21 +6,21 @@ download=0
 
 while getopts "w:g:n:d:v:" option; do
     case $option in
-    w)
-        download=$OPTARG
-        ;;
-    g)
-        gnum=$OPTARG
-        ;;
-    n)
-        node=$OPTARG
-        ;;
-    d)
-        dim=$OPTARG
-        ;;
-    v)
-        varDensity=$OPTARG
-        ;;
+        w)
+            download=$OPTARG
+            ;;
+        g)
+            gnum=$OPTARG
+            ;;
+        n)
+            node=$OPTARG
+            ;;
+        d)
+            dim=$OPTARG
+            ;;
+        v)
+            varDensity=$OPTARG
+            ;;
     esac
 done
 
@@ -33,21 +33,24 @@ done
 echo "${download} ${gnum} ${node} ${dim} ${varDensity}"
 
 vardenPath="DBSCAN"
-outPath="/home/pedro/projects/varden_dataset_generator/varden/"
+outPath="/home/pedro/projects/generators/varden/"
 
 for gi in $(seq 1 1 ${gnum}); do
+
     oldPath="${outPath}varden_${node}_${dim}.arff"
-    newPath="${outPath}varden_$new{gi}_${node}_${dim}.arff"
+    newPath="${outPath}varden-${dim}d_v${gi}.arff"
 
     sleep 2
-    ./${vardenPath} -algo 0 -ds ${oldPath} -n ${node} -d ${dim} -vd ${varDensity}
 
-    # while IFS= read -r line; do
-    #     echo ${line}
-    # done <${oldPath}
-    # head -10 ${oldPath}
+    ./${vardenPath} \
+        -algo 0 \
+        -ds ${oldPath} \
+        -n ${node} \
+        -d ${dim} \
+        -vd ${varDensity}
+
     python wash_varden.py ${oldPath} ${newPath}
 
     rm ${oldPath}
-    mv ${newPath} ${oldPath}
+
 done
