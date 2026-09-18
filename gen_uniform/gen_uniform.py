@@ -88,9 +88,10 @@ def save_arff(
 
 
 for x in range(1, 6):
-    data = generate_uniform(n=100_000, d=5, min_value=0.0, max_value=1.0)
-    save_arff(
-        data,
-        f"uniform_v{x}.arff",
-        relation_name="kdtree_worst_case"
-    )
+    for d in [5, 10, 15, 20]:
+        data = generate_uniform(n=100_000, d=d, min_value=0.0, max_value=1.0)
+        save_arff(
+            data,
+            f"uniform-{d}_v{x}.arff",
+            relation_name="kdtree_worst_case"
+        )
